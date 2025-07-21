@@ -8,6 +8,8 @@ const (
 	ScopeEmail Scope = "email"
 	// ScopeProfile allows retrieving basic profile information.
 	ScopeProfile Scope = "profile"
+	// ScopeYouTubeReadonly allows read-only access to YouTube resources.
+	ScopeYouTubeReadonly Scope = "https://www.googleapis.com/auth/youtube.readonly"
 )
 
 // DefaultScopes lists the scopes used when none are provided to NewService.

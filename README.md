@@ -2,7 +2,7 @@
 
 GAuss is a Google OAuth2 authentication package written in Go. It is designed to be embedded into your own projects so
 that you can easily authenticate users with Google and manage their sessions. A small demo application is provided under
-`cmd/web` to illustrate how the package can be integrated.
+`examples/user_auth` to illustrate how the package can be integrated.
 
 ---
 
@@ -25,6 +25,16 @@ that you can easily authenticate users with Google and manage their sessions. A 
     - Client Secret
 3. A **session secret** (any random string or generated key).
 
+### Configuring Google Cloud Console
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) and select or create a project.
+2. Navigate to **APIs & Services → Credentials** and click **Create credentials → OAuth client ID**.
+3. Choose **Web application**.
+4. Add `http://localhost:8080` under **Authorized JavaScript origins**.
+5. Add `http://localhost:8080/auth/google/callback` under **Authorized redirect URIs**.
+6. Save to obtain your **Client ID** and **Client Secret**. These values will be placed in your `.env` file.
+7. If you plan to run the YouTube listing demo, enable the **YouTube Data API v3** for your project.
+
 ### Environment Variables
 
 Set the following environment variables before running GAuss:
@@ -39,13 +49,15 @@ For example, you might place them in an `.env` file (excluded from version contr
 GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 SESSION_SECRET="random-secret"
+# Callback URL configured in Google Cloud Console
+# http://localhost:8080/auth/google/callback
 ```
 
 ### Run the Demo
 
 This repository is not a standalone CLI tool. The code under `pkg/` is meant to
 be imported into your own applications. However a small demonstration app lives
-in `cmd/web` if you want to see GAuss in action.
+in `examples/user_auth` if you want to see GAuss in action.
 
 1. **Clone** the repository or place the files in your Go workspace.
 2. **Install** dependencies:
@@ -54,10 +66,17 @@ in `cmd/web` if you want to see GAuss in action.
    ```
 3. **Run** the demo application:
    ```bash
-   go run cmd/web/main.go
+    go run examples/user_auth/main.go
    ```
 
 The demo listens on `http://localhost:8080`.
+
+There is also a YouTube listing demo under `examples/youtube_listing` that
+requests the `youtube.readonly` scope and displays your uploaded videos.
+Run it with:
+```bash
+go run examples/youtube_listing/main.go
+```
 
 ---
 
@@ -67,7 +86,7 @@ You can override the default embedded `login.html` in the demo by passing the
 `--template` flag:
 
 ```bash
-go run cmd/web/main.go --template="/path/to/your/custom_login.html"
+go run examples/user_auth/main.go --template="/path/to/your/custom_login.html"
 ```
 
 - If the flag is **not** provided, GAuss uses its default embedded `login.html`.
@@ -76,7 +95,7 @@ go run cmd/web/main.go --template="/path/to/your/custom_login.html"
 ### Example
 
 ```bash
-go run cmd/web/main.go --template="templates/custom_login.html"
+go run examples/user_auth/main.go --template="templates/custom_login.html"
 ```
 
 Ensure that your custom file exists and is accessible. Otherwise, you’ll get an error like
@@ -100,10 +119,10 @@ svc, err := gauss.NewService(clientID, clientSecret, baseURL, "/dashboard", scop
 
 If the slice is empty, GAuss defaults to `profile` and `email`.
 
-To see a working example, run the demo from `cmd/web`:
+To see a working example, run the demo from `examples/user_auth`:
 
 ```bash
-go run cmd/web/main.go
+go run examples/user_auth/main.go
 ```
 
 Open [http://localhost:8080/](http://localhost:8080/) and authenticate with Google. The demo demonstrates how to mount
